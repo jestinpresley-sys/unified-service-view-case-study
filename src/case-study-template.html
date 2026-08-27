@@ -1,0 +1,457 @@
+<title>Unified Service View</title>
+<style>
+:root {
+  --paper: #f5f6fa;
+  --paper-raised: #eceff7;
+  --paper-raised-2: #e3e6ee;
+  --ink: #20232f;
+  --ink-dim: #6b7280;
+  --ink-faint: #9aa1b4;
+  --line: #e3e6ee;
+  --line-strong: #cadcfc;
+  --accent: #b9791e;
+  --accent-ink: #ffffff;
+  --stamp: #2c5aa6;
+  --good: #1e8e5a;
+  --warn: #b9791e;
+  --critical: #b23a3a;
+  --plate-bg: #1e2761;
+  --shadow: 0 1px 0 rgba(32,35,47,0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #12162e;
+    --paper-raised: #171c3a;
+    --paper-raised-2: #1d2347;
+    --ink: #e7ecfc;
+    --ink-dim: #abb4d9;
+    --ink-faint: #7c86b0;
+    --line: #262c52;
+    --line-strong: #34406e;
+    --accent: #d99a3e;
+    --accent-ink: #1e2761;
+    --stamp: #7fa8e0;
+    --good: #4fbe85;
+    --warn: #d9a13c;
+    --critical: #e07a6e;
+    --plate-bg: #0f1330;
+    --shadow: 0 1px 0 rgba(0,0,0,0.3);
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #12162e;
+  --paper-raised: #171c3a;
+  --paper-raised-2: #1d2347;
+  --ink: #e7ecfc;
+  --ink-dim: #abb4d9;
+  --ink-faint: #7c86b0;
+  --line: #262c52;
+  --line-strong: #34406e;
+  --accent: #d99a3e;
+  --accent-ink: #1e2761;
+  --stamp: #7fa8e0;
+  --good: #4fbe85;
+  --warn: #d9a13c;
+  --critical: #e07a6e;
+  --plate-bg: #0f1330;
+  --shadow: 0 1px 0 rgba(0,0,0,0.3);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Calibri, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+
+.mono {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, 'Roboto Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.display {
+  font-family: Cambria, Georgia, 'Times New Roman', serif;
+  letter-spacing: 0.01em;
+}
+
+a { color: var(--stamp); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+::selection { background: var(--accent); color: var(--accent-ink); }
+
+.sheet {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 28px 120px;
+}
+
+/* ---------- Header / masthead ---------- */
+.masthead {
+  padding: 56px 0 34px;
+  border-bottom: 3px solid var(--ink);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.masthead-mark {
+  font-family: Calibri, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 13.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+.masthead-mark span { color: var(--accent); }
+.masthead-case {
+  font-family: Calibri, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+h1.title {
+  font-family: Cambria, Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  letter-spacing: 0.005em;
+  font-size: clamp(44px, 8vw, 76px);
+  line-height: 1.0;
+  margin: 18px 0 6px;
+  text-wrap: balance;
+}
+.subtitle {
+  font-family: Calibri, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  font-size: 19px;
+  letter-spacing: 0.01em;
+  color: var(--ink-dim);
+  margin: 0 0 28px;
+  max-width: 46ch;
+}
+
+.meta {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line-strong);
+  margin-bottom: 8px;
+}
+.meta dl { margin: 0; padding: 14px 18px; border-left: 1px solid var(--line); }
+.meta dl:first-child { border-left: none; padding-left: 0; }
+.meta dt {
+  font-family: Calibri, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 5px;
+}
+.meta dd {
+  margin: 0;
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 13.5px;
+  color: var(--ink);
+  line-height: 1.35;
+}
+@media (max-width: 680px) {
+  .meta { grid-template-columns: 1fr 1fr; }
+  .meta dl:nth-child(3) { border-left: none; }
+}
+
+/* ---------- Section structure ---------- */
+section.doc-section { padding: 64px 0 8px; border-top: 1px solid var(--line); }
+section.doc-section:first-of-type { border-top: none; }
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+.section-num {
+  font-family: Calibri, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+h2.section-title {
+  font-family: Cambria, Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  letter-spacing: 0.005em;
+  font-size: clamp(24px, 4vw, 32px);
+  margin: 0;
+  text-wrap: balance;
+}
+
+.lede {
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ink);
+  max-width: 62ch;
+}
+p { max-width: 66ch; }
+.prose p + p { margin-top: 1.1em; }
+
+/* ---------- Feature entries ---------- */
+.feature { margin: 40px 0 52px; }
+.feature-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+h3.feature-title {
+  font-family: Cambria, Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  font-size: 21px;
+  margin: 0;
+}
+.feature-tag {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.03em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+}
+.feature p { color: var(--ink-dim); font-size: 16px; }
+.feature p strong { color: var(--ink); font-weight: 600; }
+
+/* ---------- Exhibit plates (screenshots) ---------- */
+figure.plate {
+  margin: 22px 0 0;
+  background: var(--plate-bg);
+  border: 1px solid var(--line-strong);
+  padding: 10px;
+}
+figure.plate img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+}
+figcaption.plate-cap {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 10px 4px 2px;
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+}
+figcaption.plate-cap .exhibit-id { color: var(--accent); font-weight: 700; }
+
+/* ---------- Log entries ---------- */
+.log-entry {
+  display: grid;
+  grid-template-columns: 108px 1fr;
+  gap: 20px;
+  padding: 22px 0;
+  border-top: 1px solid var(--line);
+}
+.log-entry:first-child { border-top: none; padding-top: 0; }
+.log-label {
+  font-family: Calibri, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  padding-top: 3px;
+}
+.log-body h4 {
+  font-family: Cambria, Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  font-size: 17.5px;
+  letter-spacing: 0.005em;
+  margin: 0 0 8px;
+}
+.log-body p { color: var(--ink-dim); font-size: 15.5px; margin: 0; }
+.log-body code {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  background: var(--paper-raised);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+  color: var(--ink);
+}
+@media (max-width: 560px) {
+  .log-entry { grid-template-columns: 1fr; gap: 6px; }
+}
+
+/* ---------- Stack table ---------- */
+.stack-table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+.stack-table tr { border-top: 1px solid var(--line); }
+.stack-table tr:first-child { border-top: none; }
+.stack-table td { padding: 11px 4px; font-size: 15px; vertical-align: baseline; }
+.stack-table td:first-child {
+  font-family: Calibri, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  width: 150px;
+  white-space: nowrap;
+}
+.stack-table td:last-child { color: var(--ink-dim); }
+.stack-table td:last-child strong { color: var(--ink); font-weight: 600; }
+
+/* ---------- Status pills ---------- */
+.pill {
+  display: inline-block;
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+.pill.good { background: color-mix(in srgb, var(--good) 18%, transparent); color: var(--good); }
+.pill.warn { background: color-mix(in srgb, var(--warn) 18%, transparent); color: var(--warn); }
+.pill.crit { background: color-mix(in srgb, var(--critical) 18%, transparent); color: var(--critical); }
+
+/* ---------- Footer / colophon ---------- */
+footer.colophon {
+  margin-top: 70px;
+  padding-top: 24px;
+  border-top: 3px solid var(--ink);
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 12px;
+  color: var(--ink-faint);
+  letter-spacing: 0.01em;
+}
+footer.colophon strong { color: var(--ink-dim); }
+</style>
+
+<div class="sheet">
+
+  <header class="masthead">
+    <div>
+      <div class="masthead-mark">VARSITY SPIRIT<span> &middot; CUSTOMER CARE</span> &nbsp;/&nbsp; CONCEPT DOSSIER</div>
+      <h1 class="title">Unified Service View</h1>
+      <p class="subtitle">A single search bar for Customer Care &mdash; order, shipment, inventory, and call history on one screen, instead of five separate systems.</p>
+    </div>
+    <div class="masthead-case mono">CASE&nbsp;NO. USV&#8209;001<br>STATUS: CONCEPT PROTOTYPE</div>
+  </header>
+
+  <div class="meta">
+    <dl><dt>Role</dt><dd>Concept design &amp; build, solo</dd></dl>
+    <dl><dt>Built with</dt><dd>Claude Code, end to end</dd></dl>
+    <dl><dt>Stack</dt><dd>HTML &middot; CSS &middot; vanilla JS</dd></dl>
+    <dl><dt>Status</dt><dd>Prototype, proposed internally</dd></dl>
+  </div>
+
+  <section class="doc-section">
+    <div class="section-head">
+      <span class="section-num mono">01</span>
+      <h2 class="section-title">The Brief</h2>
+    </div>
+    <p class="lede">Every call into Customer Care starts the same way: an agent checking four or five disconnected systems just to answer one question. The AS/400 has the order. The OMS has the line items and production stage. A carrier portal has the tracking number. A separate inventory feed has the actual stock. And whatever was said on the last call usually lives in a spreadsheet, if it was written down at all.</p>
+    <div class="prose">
+      <p>This wasn't a client brief &mdash; it started as a self-directed concept, built to make the case for something better before asking anyone to fund it. The goal was a single working screen: search a name, a phone number, or an order number, and get the full picture back &mdash; account, current order, live shipment status, real-time stock by size, and the call history &mdash; without a single tab switch.</p>
+      <p>No backend, no live system connections. Just a working interaction model, built on sample data shaped like the real thing, concrete enough to hand to a room and say <em>this is what it could feel like</em>.</p>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <div class="section-head">
+      <span class="section-num mono">02</span>
+      <h2 class="section-title">What It Does</h2>
+    </div>
+
+    <div class="feature">
+      <div class="feature-head">
+        <h3 class="feature-title">Customer &amp; Order Lookup</h3>
+        <span class="feature-tag">Search &middot; shipment &middot; notes</span>
+      </div>
+      <p>One search bar takes a name, a phone number, or an order number and returns the whole account: contact info, lifetime order count, the current order's line items with live per-size stock badges, and a stitched status tracker &mdash; a dashed gold line that fills in as the order moves from <strong>Ordered</strong> to <strong>Delivered</strong>, a small nod to the embroidery on the uniforms themselves. Call notes sit directly beneath the order, logged inline, so the next agent to pick up the phone isn't starting from zero.</p>
+      <figure class="plate">
+        <img src="__IMG_01__" alt="Unified Service View customer lookup showing Sarah Martinez's account, her Competition Uniform Set order with a shipped status tracker, and a call notes log">
+        <figcaption class="plate-cap"><span class="exhibit-id">EXHIBIT A</span><span>Customer &amp; order lookup</span></figcaption>
+      </figure>
+    </div>
+
+    <div class="feature">
+      <div class="feature-head">
+        <h3 class="feature-title">Inventory Lookup</h3>
+        <span class="feature-tag">Live stock &middot; by size</span>
+      </div>
+      <p>A second mode on the same search bar &mdash; switch tabs and the same input now searches items and SKUs instead of customers. Stock is broken out by every size the warehouse carries, each tagged <strong>In Stock</strong>, <strong>Low Stock</strong>, or <strong>Backordered</strong>, with a restock date surfaced the moment a size runs out. An agent can give a real ship date on the first call instead of promising a callback.</p>
+      <figure class="plate">
+        <img src="__IMG_02__" alt="Unified Service View inventory lookup showing the Competition Shell Crimson/Gold SKU with a restock note and per-size stock levels">
+        <figcaption class="plate-cap"><span class="exhibit-id">EXHIBIT B</span><span>Inventory lookup</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <div class="section-head">
+      <span class="section-num mono">03</span>
+      <h2 class="section-title">Under the Hood</h2>
+    </div>
+    <p class="lede">There's no backend here &mdash; the interesting decisions were about making a concept concrete enough to argue for, without touching a single production system or a real customer record.</p>
+
+    <div class="log-entry">
+      <div class="log-label mono">SAMPLE DATA</div>
+      <div class="log-body">
+        <h4>Real shape, fictional records</h4>
+        <p>Three sample customers and six sample SKUs stand in for the AS/400, the OMS, the carrier API, and the warehouse feed &mdash; shaped like the real integrations so the interaction model can be evaluated honestly, without wiring up production systems or exposing real customer data just to pitch an idea.</p>
+      </div>
+    </div>
+    <div class="log-entry">
+      <div class="log-label mono">SIGNATURE DETAIL</div>
+      <div class="log-body">
+        <h4>A stitched status tracker</h4>
+        <p>The shipment tracker uses a dashed line that fills solid gold as an order advances &mdash; styled after the stitching on the uniforms Varsity Spirit actually ships, so the one piece of UI unique to this brand is also the one carrying the order status, not a generic progress bar borrowed from anywhere else.</p>
+      </div>
+    </div>
+    <div class="log-entry">
+      <div class="log-label mono">THE PITCH</div>
+      <div class="log-body">
+        <h4>Prototype first, then the case for it</h4>
+        <p>Once the screen worked, the next artifact wasn't more code &mdash; it was a nine-slide deck built to bring the concept to leadership, using this prototype as its own proof-of-concept screenshot rather than a mockup. Its impact slide deliberately ships with dashed, unfilled metric boxes: a place to drop real numbers in once a pilot actually runs one, instead of inventing them to make the pitch land.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="doc-section">
+    <div class="section-head">
+      <span class="section-num mono">04</span>
+      <h2 class="section-title">Stack</h2>
+    </div>
+    <table class="stack-table">
+      <tr><td>Frontend</td><td><strong>HTML</strong>, <strong>CSS</strong>, vanilla <strong>JavaScript</strong> &mdash; a single self-contained file, no framework, no build step</td></tr>
+      <tr><td>Data</td><td>Hard-coded sample dataset, shaped to mirror <strong>AS/400</strong>, <strong>OMS</strong>, <strong>carrier API</strong>, and <strong>warehouse feed</strong> records</td></tr>
+      <tr><td>Type</td><td><strong>Cambria</strong> (display), system sans-serif (body &amp; labels) &mdash; no external fonts loaded</td></tr>
+      <tr><td>Companion</td><td>A 9-slide pitch deck (<code>pptxgenjs</code>), built in the same navy-and-gold palette to bring the concept to leadership</td></tr>
+      <tr><td>Status</td><td>Concept prototype &mdash; proposed internally, not connected to any production system</td></tr>
+    </table>
+  </section>
+
+  <footer class="colophon">
+    <div><strong>Unified Service View</strong> &mdash; concept dossier, prepared for internal review.</div>
+    <div>Customer and order data shown is fictional sample data &mdash; no real Varsity Spirit customer information appears above.</div>
+  </footer>
+
+</div>
